@@ -1,0 +1,18 @@
+PREÇO DA PASSAGEM EFC - APP INSTALÁVEL (PWA)
+
+Para instalar pelo navegador, os arquivos precisam estar num endereço https.
+Opção mais rápida (grátis, sem programar):
+  1. Acesse https://app.netlify.com/drop
+  2. Arraste esta pasta inteira (preco-passagem-pwa) para a página.
+  3. Abra o link gerado no Chrome do celular.
+  4. Menu ⋮ > "Instalar app" (ou "Adicionar à tela inicial").
+Alternativa: GitHub Pages (crie um repositório, envie estes arquivos e ative Pages).
+
+No iPhone: abra no Safari > Compartilhar > "Adicionar à Tela de Início".
+
+Depois de instalado, o app abre em tela cheia, com o ícone R$, e funciona sem internet.
+
+Atualizar preços: edite index.html (matrizes EX_INT, EX_RED, EC_INT, EC_RED),
+troque CACHE em sw.js para "passagem-efc-v2" (v3, ...) e publique de novo.
+
+Obs.: abrir o index.html direto do arquivo (file://) funciona, mas não instala.

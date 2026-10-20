@@ -1,6 +1,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tabela de Preços EFC</title>
+<title>Preço da Passagem</title>
+<meta name="theme-color" content="#007E7A">
+<meta name="description" content="Preços das passagens do Trem de Passageiros da Estrada de Ferro Carajás, tabela 2026.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Passagem EFC">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -30,6 +40,7 @@ label{color:var(--white);font-size:1.15rem;font-weight:500;margin-top:12px;lette
 select{appearance:none;-webkit-appearance:none;width:100%;border:2px solid #E4EAEA;border-radius:10px;background:var(--white);color:var(--ink);
   font:500 1.35rem/1.2 var(--sans);padding:15px 50px 15px 18px;box-shadow:0 2px 0 rgba(0,0,0,.12);cursor:pointer}
 select:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+select:invalid{color:rgba(31,59,58,.38)}
 select option{color:var(--ink);background:var(--white);font-size:1rem}
 .sel::after{content:"";position:absolute;right:20px;top:50%;margin-top:-4px;border:8px solid transparent;border-top:9px solid var(--yellow);border-bottom:0;pointer-events:none}
 .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;gap:10px}
@@ -58,17 +69,39 @@ footer{color:var(--soft);font-size:.78rem;padding-left:max(28px,env(safe-area-in
 .ok{background:var(--teal);border:0;color:var(--white);font:600 1rem var(--sans);letter-spacing:.06em;padding:11px 26px;cursor:pointer;border-radius:8px}
 .ok:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
 .warn{font-size:1.05rem;line-height:1.5;margin:0}
+
+/* Abertura: R$ entra, o $ gira como moeda, depois a tela se revela */
+.splash{position:fixed;inset:0;z-index:50;background:var(--teal);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  animation:splashOut .5s ease-in 1.9s forwards}
+.splash::after{content:"";position:absolute;top:0;bottom:0;right:0;width:calc(var(--rail) + env(safe-area-inset-right,0px));background:var(--yellow);
+  transform-origin:top;animation:railIn .5s cubic-bezier(.2,.8,.2,1) both}
+.splash .mark{display:flex;align-items:baseline;font-weight:700;font-size:clamp(5.5rem,30vw,9rem);line-height:1;letter-spacing:-.02em;perspective:600px}
+.splash .r{color:var(--white);animation:rIn .55s cubic-bezier(.2,.9,.25,1.2) .15s both}
+.splash .d{color:var(--yellow);display:inline-block;animation:coin 1s cubic-bezier(.3,.7,.3,1) .45s both}
+.splash .tag{color:var(--soft);font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;animation:fadeUp .5s ease-out 1.05s both}
+@keyframes rIn{from{opacity:0;transform:translateX(-40px) scale(.8)}to{opacity:1;transform:none}}
+@keyframes coin{0%{opacity:0;transform:translateY(-120px) rotateY(0)}45%{opacity:1;transform:translateY(0) rotateY(540deg)}65%{transform:translateY(-14px) rotateY(720deg)}100%{transform:translateY(0) rotateY(720deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes railIn{from{transform:scaleY(0)}to{transform:none}}
+@keyframes splashOut{to{opacity:0;visibility:hidden}}
+.rs .r,.rs span{display:inline-block}
+body.ready .rs{animation:fadeUp .6s ease-out both}
+@media (prefers-reduced-motion:reduce){.splash{animation:splashOut .3s ease-in .4s forwards}.splash *,.splash::after,body.ready .rs{animation:none!important}}
 </style>
 
+<div class="splash" id="splash" aria-hidden="true">
+  <div class="mark"><span class="r">R</span><span class="d">$</span></div>
+  <div class="tag">Preço da Passagem</div>
+</div>
 <main>
   <img class="logo" alt="Vale" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAO4AAABsCAYAAABtlo7xAAAcaUlEQVR42u2dWYwsZ3XHf9XTs98FLxDxEilC2bDB2MG+ZkkUicc8kAXbiUWwsbkY20AiRQTDU16iKDzwYt/FCziYSwLESR7yEEVJDAHjFbANNoEkingLBGzfO3d6Znp6qTx851Cnvvmqunqmu6er+ztSq6d7uqurvjr/7+znJGmaEmmuKJHneONrTI24BJEi1Y+acQnmjqKkjRI3UqRIEbiRIkWKwI0UKQJ3LyVkHspIkSJFiRspUqRxATdlOjyUUerHNZk7ak6AeVLzOvVU7LTC5pAM+FyVz8wbxbWIwB0ZiEM2cVJiL/cLpEca2BjSITaQeZfEcR0icHOMYCWqvm56Knkif1swLgQA2gd6Bryp/K2P1Pu9NIKt0vcjaCNwSxmlASzJ34sCTvtoChM1zCPxANqTR9c8duW91DwnMw7edACQkwFmQxqlbQRuSP3Vvy0wF+XYy/LclPevAX5NgPpmeV4A3iDPPeC/gY6A9wXgOeBbAtodD8jdgGSeRYlrqeFJ0MRoNP0SwEdfwCwxxQGqgxIPsKvyvCLSdgW4TUD7bgHzknk0zHctc3aFuVTCdoBt4AfAw8A3gbY8duT/u0YK67n1ZwiwjYA/IPXeTz0zwwdtBOycA9cH7LKAdFkeHxBg3mT+1xQm26+EVxBvy+N7AuJngU15r2ckcK/GEtiuL8a0UA0pKfAZqJlhN76e0UjKpHGkGQFukUqVGEZaFoCuyeMk8LvAEXksMZ54Yl8k7UUB8APA00BLwN02THvYkiZkjw46H6uJrHgmh5ohVxnAvkWen5O1+ZZcu65FR54tgGdBI4nArchwCtolUYtXBLAfBG4EjgLrwliTctpsyeMF4CHgSXmtKnSH6fKoJgXOJsg77haNubECvBV4n7z/ywbEfky8I5vW94Fvy5q0ZVPryrqkRipHyTvDqrIyx6I8jgpgPwTcALxG3jvM9MkWsAH8DXBGXm8bZ1Z/CEYNJY4MA/ykokrqO/aWjAazDFwrm+KvGlNkqaK50Zbrvwh8GXhQXm/Jc3vINYlUM+Ba0K4IQN8O3IHzCh+foIStYgdvAs8DZ4FvGPDuko8BTwK4aQVgWzVYtZgTYna8UdZ7+QC+gY6A9QLwJeC0gHmbfGgtUg2BW8ZoibG1jgN3ArcAl4pkmEbaBl4x0ndTmFe9z1Ul4X4Zuuz7Dc+OXTEmx9uA24ErBbCrI1yTXQHv/wLnZF3aRmWOVDNqVmTEJvB+UY0vmWLQIgz/OuBW0QruFpBsCWA6E5Y0fuhG7ddFOdejwCngijEAVmnJ/GaM5c4ANUrsnFDg/yAhnUnSInAZcL3Yd78uoFghy+Qq8nj76zGo7jgJ2LV+MYWunfXCXwb8EfAvcp6vGxNo9Zx2gH8APhfBO9sS13pj+8Bf4cI8d4jdNfVmAHBMnDxvAD4BPC4A2pLPjCvem3ibSIMszr1u7NirxAQZ92a4JabDZ4zJEMNBNbdxB31GY4dHBQiPAa9nepxSVZ00rwBfELV0A+d51tRKP4XQgrmqs8n//IKRsgrYddn4fl/WcnVC1/5j4F3AeZxzqk30KNdeVR4kOTQjaVuY/ZMCgm6NrnMRuBwXC72LLOa8bOy+MjNhmPVc8MB6FBcyewfwz+IreO2EQNuVe3WPAHYrsFlFmlGJmxgHx6qodh8WBryU+nVb+Ckuy+hOnMd5hyxhI1RVU3V91G5uemrx9aIWv0mk7CQTVF4WE+c+nFdZw0ARtHMAXOuAUWY8BnwEFxq6pGbXnIoUek6kr2ZfbbM3WaMsZVHXRKWsZjxpfvb1uLztNzM+b3EZvYrL5z4lKvJWtG3nD7gYJl0x4L1fGHSthuDdwCVrPIBL1tgw4O0NsGl9wKpqvEqWBnoTWZbZpGkHl/55UlTki0w+DBZpjNQcktn7smsr896Py/BZJqtmqcWGJSr/tcAvAR/DeZwR8MLe0ji1YVUd9gstrsUlULwZ531fPSQzoicS9ixZ8kk32rXzLXH12aZAflTs3cuoZ3dBdeD8iZG8mpRvPa8220nVYU1RvA2X8bR2yNqHtWs/Tb7gIhSfJoJ59oHrg9c6qz4izPuamq5DVxj+Y8DXyDywXaNd9AWwR3D52ifFZFDArkzBdZzHxWpPyTVs4kI/IYBG4M4RcO1N1/juuoD3YVz52WqNwfsqLrPotEjeLbLOGolI17sFrK+V656WZJQt4Bmxry+Q1SfHfOQZpP2W4ikza3x3S5j9PPWK7/r2/iU4T/ndZLFerX1dAF4EXiIf8pkG6ojG8GFj10bQRuAWgleL1bdxXszPi9RKawzey3EFCh8V1X/NADQVzeJRsvK4w6a+rPlfky/ZKwJtnHIwx6qyD/5lYXC1d+sY3/U3pVdwTp4zAggtCVwSSfx24M9xTrn1QwKEqvePAPeKtFUVOcZrI3AH2rvaHWNNpNRZXH3pas3X5wKuh9OdHiAacm3rYlPezOSTLDrGJr+PrOtHp0DaxoqgqCrvkU62C+NFXFLDBcKx0DrRcVwf6AeAd8rG1BTwbuEcWPeJZP6JXPMkJF0L+JH87inPru2X3KdIUeIG7aamMPcR4I/FVqxrfNfSFs7580myhnQq2WxTt5O4jKnjIo1HmZSSysa4CXwH54hqycM2ih8E0hgGisANSnC1AY/jvLO3y991pw7Oa35OTAEFTJ98y9o1XEz7Jlxa6BoHKyzoye+0cO1oHwKeIiuQ8NvRVt1kI3DnFLhFM2xsfPcY8Fnguhmwd5XZz4vE0xxnbcbek41LCw2Wxf69BtepUZu+LZGFl5TsvCSMNN8F/lP+/iwuTqtN4XfINz0vqh8+aPO7SDMuce30PGXQo8Bv4tLvLqdexfdltC32rUrfbSP57NAzfVyDS05ZAK7GdeSwa6EA/KHxGZwTMD9vpG6bfBpjz9tUQhMMI3AjcCtL4MRIHVWZNZ+5MSNrZyuMHhTbVycHdIzp4A9Ds1VFV+Gauevx7ChRjAajyS434KY2PENx/XAEZgTugUCs4LXF97fiiu9niXbE3vyuqM/PkA0r800JOwOoQb5VjgVgw0juptjLvwH8Iy4XWcsP0xKTJQK3BvgLbLwhM3QiwPWHVtt85rO4Fi6rM3gTFMAv4bKr2rgYsErSBlnOsy8h7fAulcq3yOvfkmN9H5fc0iKbBZRWZIRIEbhDq8xq7x4RZ9W/41qRLszozVBbVMHWw3Xb+A75aQovyv/eImv0JgHsNbj5QIk53ou4bh02pTE2e5tjao5xJ1E1Tu2zlvzeOepdvzuINKYLroKog6sqSo36bCcJ2hGkTXNPNMljE5dooaNUDjqFMKrSEbiVHDiQeT9buNzfBepdvzsMSNSzHFqbso1L+x//nbGbdynORospjXNEjTGB1e9TrDHKtqh7p3He2K1o3xTSRVwf6LMBuzYt2SSrbqaHdX0Jw2laifedZB/nMWgSRWOI7yeMX1NMDgO4ISkQqt+9G5ck3yVSyE7+roB2i6x5+yjs2hDjjYMR04MwJmFv+343nnTI/0+9CTdu4Kbeo0+WRLAp9m6d63fHQdrsTcsJW2Te6HREjJWWvB4F0yYVQTgJzSCd0Hcmseklk7JxferLj+/IpnG/2H+3Uu/63VHSq6IiPyUbXGgcZjpiYKWedjQKxksG2PFVbPIkcBw1vepoEpX1/aoSyvvZ++NKwCi7QYlx2miI6CGc53VtzkF7HudBvpd836h+BWmY7oOREu/+7Ae4SeA+p542N4yam1QA/UG96v40xWE2xWEGl+9Xgxk0yyodNXCrJgDYzKpjuGyqf2O247uDaBv4Jq6aSkEbSrRICqRVWoFZFUw6kMwyrzoQ+0MCwx/BshDwb3SNGVAmcf1m89Yx1fce6RAbgWV6OyrGAqTqtQ8aBB86/4bZfBtmvX1zte8du+ddL4elKvtM1iXzNJ8Tlfly5q8vkjZ707aqWhTfqyBxkorrbVMom7hYs2UaTdPskuVaDwNe2yRembZn7nHX+DkoAa3mca/Kc2J4xR6rt0/Q6jkumuvX0Jtd82EkWhL4DTuLuYqfqe/5OXpyXu3Q/WiOCZBVP6tVL4k4Yxq4eTvH5wi0Wir4CVyhwjbFKY0H0YQsMHRszKLwQFfuw1NkNcbdIY6tDfJPyPOSvN+W4z094Jh2ALg2Y3ibHGuBzKn5rFmzfgWes6BtGECdMMDSTesJc8zuPvncNs1/hzn/ZAjgpga4m8ITe9auOQVMq0yzIeBdEnVxXuzdC7hmb1+XNWgbFakK06RDOH+UqXQYmU4P3JHz+G3DJMkAh4oWSdh89HcA7xVpqdVTPwLeY1TzsuMtkDWd/wtcdt2C2eBfxPX/So2krGqWJeb4J+X6NWd+Azf4+14DnKLjpgU2vTUZTnjn3xhwHN+u1ZG2PwXeTdbUfqqAq6GOHVET7wd+h6wB3SzTFvBtuebWiCVtGaC/h+tSeZms8a4w9PXAV+Q8Bkld2/lD5yfdLMdcNcz/pQrqvG19tCrAuhwXaVgyEle1ha8bm7xXslGF1HnVDo7LxoV5X9di2HCV3Rx0PY6L72YpAM6+B3gbLrWRl8cGienDBq8yyS5ZxtCsx3d7IuXuF5XITgpMxrTGulG+4DlRVoWJTxoVsipvaHteNXHWjQoOLkMu6GAJaAM61ka7pywbSakdRE+SNe1bKJHkZb+jKrN92OMNk0llfQ76Xb2OZYqzrkLZYH2yBKVHcdGWYH/s5pQwcV/UnsTYu0vAH8rOO4t27SvAx41dOUzfqIOss3bV+L6RaAijXYlrM/RV4xwpU5dVTdaGeWvGGdMDfoArbeyQD2n5cdmGAe4JXP1xqPRzjawN0JIwecMzK5IB2oaduKi0SNjTvh8/Quj4eE6wtnfOer7buFZFTwpot7y1Gytwq1afJAEPqdq7DVzb0wS4g9mr3z0vdu03REW2ozCTISXIIEZNPSm/K2v8sNh56+b/6yI5nxHmagScQKkBrUqX5QDYtgxoi9I1rZ23ZIB7vAA8TVw7pOuAf5XX7X04SAdJ1YM4YIuA38ENldPWQz3yufyqDT1twG0/NxXhoDJHFXLCTZG8N5E1WJsFaomqqimNW95NhNFI3aJYr844flKcPe80UncFuELA81jA5ksCYNO2tHYecFccPp8hSyDpBc4lCdiefzBgo14T5+XjnnkBB6+QGqfpqEPZLpiNumc2x75RizXk1Sm6nsYBGSMpAOAwlSr+cZSxtGfw50WtnAV7dwcXr73bSNoO+cB/WuD4GFYCpCW2tcYsH5TzsL91TBxAS0Yy2Q2lEfDSvscDW1tstBaDY66qbq+JduWPc/kf7/PLuGHq1xpbfFgtZZC9PQ4fww7ZwIALonWdF1/OBtlcZnVSdsrwdJjOqaI0u9TYVy1chcwjcpF1d0ZtAPfIs+0blTK4PneUdm5XNo1nA6rmCm56w7Kn6fjgVcB9ABe+WQxIl22KpytYwGlL299jb+3yTgD467h67lVjnyZD8Ny4wDlIm7SJHm3vtU226JGPVY9U4o6rdYotA9SsqjO4zKpWjYH7qmgPT5ANnO4UOCnGtc52bdXW/Q95thLwCpFo6m0N5d+qtF0lH3Nv4/puPVvkWDEbCMYpdTKwAbRxTQaf8767JE6qFbO5NEYIxv2sdzIkZhoBzbMyHqe1VWqofveMqMydGoL2As6Te4ZsAkGX0ZXpDbu2faPVPCSbo6VVY7c2A+qoTZ28wVOTW+KU2g2YAT7vLRin1EpgA3hE7v+D5Eeaarz3BFnoaRRrOK6qI9UqNEykjxVz3boGqumUmkjT3OPYB+8mLr57vmb27raAVpu9+aGflMmXqVmp+5Q4qXY9dfkKsXV1AsOCAY1NlFgxDNaRazxLeYjLDyctAzeS9epCjvOUeW55xzmC613mawUNpiPX3VfLFaDHcF5zTdC4FBefvkSej8naloK3OeVMrw3W9AIeIF+/O+3FCFoU/4BoDbZ44LA3n66xqx7CdZe09uUxMu/tElkapLVJVULYTepvjQ1Xdp02d/h28kUPbdmoNca9gMv2equRyitkceevUD7Me9xqchXV+YhsdDtmU8NoMep76OI8/o8bwVVL4CqTaUrkKbJihCNTfv4XcZPiNV5btapl0usaclKtitT1Ja6qt2s4b/Ki50h6kHxc2jIn5ENAOiTtRk9N7uK80uqJXZTN71fIwk6J3P/bBOBtyiuqDpsaInB2zdpo2qhucKpZYnwEwVLZaR8HkpD3MuuFnRFJ1p5yu/bbcq4tw1jT0g9ZA//aA/pFz45UqWadVNYmvR2XDKGb/xYuL9nONRpURbOIG4x2lL1e6YfJe1ufFUea9XEs4npQ20qnQfH+foFmNCmydu66UaH12ZZF+g6rpC7ATT2Hyi5Z87SPM73N5tSuvZOsiXm3BLSHpfL3jK37GbPbKy0bNVaBsWRs0nVzf2xcuktxva1fc/tWT3PqAn8f8AN0cd1BOp7GeESOscx0JOkM8lm0ySYu6qNlTCmfV2zm2tjqcSfhUNH47hPirLoVV5EyTXatOmhangpXlCSQHuKmaGtxv4urGloxwLV2pJYF3iagbZpjtAT8bU9NLpK4yyLN3+jZyX3z/12yUE9TtIKQ7Xg7+YHjw0rQhQmt9wvkJ1H0zTX3jd+hNWgN6wZcBYY6L06LJLhtiuxdG6+t0g95v06PdIQbjaqjD+ImCK6Y3zoi6qw2ZVcVb9lTbR8lX0ucFkhdVbdVDT8SUCX/SzaQHQPkBfndHwrYrVZwBS5p5KvGhjzoGh2kp1WjQAu7S3jCzlT2nVP9gHMvrTNwrdRNhFmauLK4d5O1Izlsu/acsWt3BqjI0+JDsJlUL+G6Tyx6Tqp1Y9/eSOaB7hmnlI5J6Zf8ntq2K7gYcOiefYosGd9KxWXyISOltYCTqlsi7atsjPvZTMuoZXw01lFpu1ba3lylfNOYUmYq6xxvVWbtnHGPSLrD9CjuiF17mnySRY/pjTvbwm6Vut9kb/7ymqjLa2K3W6dUG/hyBeeb3z7mg7hYZpHwWCOLc14qn10p+OyKSGF1Ui1QngY5TEP2KmV+g6Ys2HY0WvWj9qxuUC1v0ylqElgL59QgyauG/ZOinr56SOfTld/WeO0m0xOvrWp+qK2rTiorsVbJ2gmtGQClxmazmVJFM3ttwsXNsgGMghqiEVxHFr4qA1Ooako3ljTgTEuGPJ5//dbB1vXA2TG80qvgH5haVblKTyXrWNFiao3vfojJ1u9qs7fPszdem05gfUYN3hZZkX3TAOMtokK/l3z5nrYb2vUYz2feBfI9r1Y9p1BqbLuusZN9yWc7ZeBtLu/HtbVZJIuBFvV4LpLATTmPUIE+AW3QHtNvTYPndEsC75VtBoXzc+tm4/oXpgZ9m6yS6Abg5yZo754Xu/Ys+eKBupUhqq26jMukuop8kf0K8JcBh4smSvix21AvY7Vt/Ywrdep9csD62cSNO2QzaXjq8rXipNopkH5Jie2tNnyPvTXSEK5i6xcALgmcd9NoHA2KIw221ZDNWPtZj6o6A9deYNvs6vcAnxa7aNzXt4WrXDlVE2dUmYMK49F8xjiplgdcv2ZKhSqBEk9NVufSe9jrlX4E+BpZWmgoHqpSe03+/ynyo1rXjZPK+higvMZZNwNtcrdk7mMIWDY9sc3eRu+hNVYtYU1A2ykArgXsLll/6pmRuP4kwLbcgCdEAt4i4B1XckNHpIQWo+83hjhNpokCd0ek7pUlwN0my5TqBmwzP81Rpc0HxLZtmN9vyTpuGGdNWgKAnpglm7icaj3WEi4tcl3+t2A2gCRgc2K+t4oLTS2Q9+7aHlpWO9FMvh7hESZpwNmmG8Ny4Hs9T5JbJ1bq81XdVWXfRlMv8ylZ8FsYz/DsVED7p7hk8C3DvHWSthRIko5I3Q0BRmgwtzULdgP3I/XsUlWTb/RU8LZsANapZ73TieeE6hsAvySb85rh53VcTPcxsiL8RgVn7PvEzGqTT+73e6OpLb6Jy/C6j3yYsmju0TLwT8aZB3szzPrm+BeAP5MNyh+7ktRdVQ45q7Sa5JTYaSfG4KzaIJ9kUdjUq4Zr2Dc7/RdxYZvLPEbU7J6HyOK2fU8NtYXyKm1tGZ7+pobO2p5zKy2wKzUhYwv4LHA1+X5Xq7hsuq+RTWnomWvrhyQYWV/lbgUn07axiRcKnFQhzUtt+763Zr4GqSWMS4Q95GmD2SFbY6q791lxHo1SfdUm5rYovmzyQN2oa7zL9+OK4l8mHx5q4WK3/riUkGPK2rdXC+gUTNp/Sb3S3QG2os3f1Vri78hGas2UNxjHVRJwwqkqGtpkm+axZB6a4NP0ANXwzlc3Bu1uWeQIW/SOv2h+V235RsH102T2SO2PLVEzviAq8yiGielwrlAT80n1jJoUeFVzuQuXdPFeY+9ekE3R77IYAq0+Xwm8XtYtNZrLFz2JO2iiH94G/QDwC2SN2NVhdJNIXXssNQPUpFIVNimQ7Da+a21Qran1+0MlRmO5YDYsazcr4DueuWqPo1lWhf2nZg24/kyZhjBYA5dAcPyAG8J5nNf6cfLFA8PMf51mZ59v627J63uFGa8Gfl5sO2sihAAbspsfJV9P2zHOvaINIHSPrVf3cTFbtMWO2ogXycJKfXMP20ZSrxaouqF18bPMbB1zzwBXq3++QH4Amp12EFove3zlracNj+XiypMYbH2YTKiewuNij11HcdrcIHoZ+Jw4I85T3sGw7sDFSJpFT1VErrtITfadMzbxouk5uhRIdnRmlYnzthPHqrGjEyNZdwPHtSmXfoMAjP3c9xxieDZvz6jCbfPa9tFaNXZz1daxfU+jaFPQUH4WVWXMztY2i3kG+EXgtfu47i1cSdZp8vW1/RlbsxAjdYz6aYc0+9lhSUDFtSDc8VRFyCfTDzOXNjV2ZM+zN5PAcW3kAaMtLHjX1Kd4orwFtO/k6nrXtOttFqFjQHGCR9879z1Oz1mVuHa31ID9cVwj8tsZrn63B/wf8C6RunXJQx61BPbt1lBT8aTE1m1Qnr5apDpWOc+kBARl59jwnEpVecqCt1GgcTQKNrK0BLgW3KWpv80ZZzxdUO3PfFqu+TaqxXf7uJawHyNLDqhjksWoJHBaosomAQCmATUwxLyDfrfquaZDHMfGXof1dRSBzt/YkgGbSOi9fpVraMwBA9oWr5rP/Dz5Ws8i2sCl4j0hoG0PqdLNogROh/xOKIGhaNTKQTeaoFp5wO+VnXfoNSX/LzteOsw1zDJw7QL0DXi1rcyFAZJzA1ebqnbtLCRZjFoCh9bbf69PuTf1IJJ2EvyzX7Niv8er9LnGnDCd7dy/javfPUfx8OwdXPHA3WQdCzpzDNpRAL2s0mZSAJsp5828qHiQLwE8hYv/bQRU6/Pkx2B25xi0+x30PCzAJpW8Mug89qtqT1RzaMwR8+miamJBS9Tg5wW8agu/ggue+10Do6Sd7CYbKQI3tzOqvbtJ5mn+iajNL+Nyc0+zt0Njfw5BlFSUlJOQyJHmELhl83e/IfbujwW0d4kEtlk3kaEiTRU15wy09rVmBWl/5l2jNtsEcitZ5gnA6Yg/F2mU6tCMZ05V0TYWyTrnE5C0kTEjRYk7RaSZLV3zGrJKj6LsoAjkSFHiTsMaRBUwUpS49bblkgjaSHWy8yLlARvjiZGixK2xBI4UKUrcmti2kSJF4EbJGilSBG6kSJEicAeq0lGdjhSBGylSpNHQ/wOYRxVCopa8QAAAAABJRU5ErkJggg==">
-  <h1>Tabela de Preços</h1>
+  <h1>Preço da Passagem</h1>
   <p class="sub">Trem de Passageiros · Estrada de Ferro Carajás</p>
   <div class="fields">
     <label for="orig">Origem</label>
-    <div class="sel"><select id="orig"></select></div>
+    <div class="sel"><select id="orig" required></select></div>
     <label for="dest">Destino</label>
-    <div class="sel"><select id="dest"></select></div>
+    <div class="sel"><select id="dest" required></select></div>
   </div>
   <div class="hero">
     <div class="rs" aria-hidden="true">R<span>$</span></div>
@@ -82,6 +115,12 @@ footer{color:var(--soft);font-size:.78rem;padding-left:max(28px,env(safe-area-in
 </div>
 
 <script>
+(function(){var sp=document.getElementById("splash");
+  setTimeout(function(){sp.remove();document.body.classList.add("ready")},2450);
+  sp.addEventListener("click",function(){sp.remove();document.body.classList.add("ready")});
+  if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
+    window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});}
+})();
 const ST=[["São Luís",0],["Arari",126],["Vitória do Mearim",145],["Santa Inês",213],["Alto Alegre",264],["Mineirinho",281],["Auzilândia",299],["Altamira",315],["Vila Pindaré",334],["Nova Vida",384],["Açailândia",513],["São Pedro",650],["Marabá",738],["Itainópolis",785],["Parauapebas",861]];
 // Matrizes da Tabela 2026: linha = DESTINO, coluna = ORIGEM (como no PDF). 0 = mesmo trecho.
 const EX_INT=[
