@@ -12,14 +12,13 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Passagem EFC">
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: tela teal inteira com faixa amarela na borda direita; logomarca no topo, título amarelo, seletores brancos, R$ ao centro; card branco com o resultado */
 :root{
   --teal:#007E7A; --teal-deep:#00625F; --yellow:#ECB112;
   --white:#FFFFFF; --ink:#1F3B3A; --soft:rgba(255,255,255,.78); --faint:rgba(255,255,255,.22);
   --scrim:rgba(0,40,38,.6);
-  --sans:"Fira Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sans:"Fira Sans",Roboto,"Segoe UI",system-ui,-apple-system,"Segoe UI",sans-serif;
   --rail:22px;
   color-scheme:dark;
 }
@@ -108,7 +107,7 @@ body.ready .rs{animation:fadeUp .6s ease-out both}
     <p class="hint" id="hint">Escolha origem e destino para ver o preço da passagem.</p>
   </div>
 </main>
-<footer>Tabela 2026</footer>
+<footer>Tabela 2026<span id="offline" hidden> · ✓ Disponível sem internet</span></footer>
 
 <div class="scrim" id="scrim" hidden>
   <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgTitle" id="dlg"></div>
@@ -118,8 +117,11 @@ body.ready .rs{animation:fadeUp .6s ease-out both}
 (function(){var sp=document.getElementById("splash");
   setTimeout(function(){sp.remove();document.body.classList.add("ready")},2450);
   sp.addEventListener("click",function(){sp.remove();document.body.classList.add("ready")});
+  var badge=document.getElementById("offline");
+  function mark(){badge.hidden=false}
   if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
-    window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});}
+    navigator.serviceWorker.register("sw.js").then(function(){return navigator.serviceWorker.ready}).then(mark).catch(function(){});
+  }
 })();
 const ST=[["São Luís",0],["Arari",126],["Vitória do Mearim",145],["Santa Inês",213],["Alto Alegre",264],["Mineirinho",281],["Auzilândia",299],["Altamira",315],["Vila Pindaré",334],["Nova Vida",384],["Açailândia",513],["São Pedro",650],["Marabá",738],["Itainópolis",785],["Parauapebas",861]];
 // Matrizes da Tabela 2026: linha = DESTINO, coluna = ORIGEM (como no PDF). 0 = mesmo trecho.

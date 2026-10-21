@@ -10,9 +10,16 @@ Alternativa: GitHub Pages (crie um repositório, envie estes arquivos e ative Pa
 
 No iPhone: abra no Safari > Compartilhar > "Adicionar à Tela de Início".
 
-Depois de instalado, o app abre em tela cheia, com o ícone R$, e funciona sem internet.
+IMPORTANTE PARA FUNCIONAR SEM INTERNET:
+  - Abra o link UMA VEZ com internet e espere aparecer no rodapé
+    "✓ Disponível sem internet". Só então instale / desligue a internet.
+  - Depois disso o app abre em tela cheia, com o ícone R$, mesmo sem sinal.
+  - Abrir o arquivo index.html direto do celular (pelo gerenciador de arquivos)
+    NÃO ativa o modo offline nem a instalação: precisa ser pelo link https.
+  - Se você já tinha instalado a versão anterior, abra o link com internet uma vez
+    para ele trocar pela versão nova (ou desinstale e instale de novo).
 
 Atualizar preços: edite index.html (matrizes EX_INT, EX_RED, EC_INT, EC_RED),
-troque CACHE em sw.js para "passagem-efc-v2" (v3, ...) e publique de novo.
+troque CACHE em sw.js para "passagem-efc-v3" (v4, ...) e publique de novo.
 
 Obs.: abrir o index.html direto do arquivo (file://) funciona, mas não instala.
